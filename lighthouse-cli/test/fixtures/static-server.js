@@ -24,8 +24,8 @@ const lhRootDirPath = path.join(__dirname, '../../../');
 class Server {
   constructor() {
     this._server = http.createServer(this._requestHandler.bind(this));
-    /** @type {(data: string) => string} */
-    this._dataTransformer = null;
+    /** @type {(data: string) => string=} */
+    this._dataTransformer;
   }
 
   getPort() {
@@ -44,15 +44,17 @@ class Server {
     });
   }
 
-  /**
-   * @param {(err?: Error) => void} cb
-   */
-  close(cb) {
-    this._server.close(cb);
+  close() {
+    return new Promise((resolve, reject) => {
+      this._server.close(err => {
+        if (err) return reject(err);
+        resolve();
+      });
+    });
   }
 
   /**
-   * @param {(data: string) => string} fn
+   * @param {(data: string) => string=} fn
    */
   setDataTransformer(fn) {
     this._dataTransformer = fn;
