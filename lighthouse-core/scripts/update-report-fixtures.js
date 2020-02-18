@@ -13,20 +13,14 @@ const artifactPath = 'lighthouse-core/test/results/artifacts';
 const {server} = require('../../lighthouse-cli/test/fixtures/static-server.js');
 const budgetedConfig = require('../test/results/sample-config.js');
 
-/** @typedef {import('net').AddressInfo} AddressInfo */
-
 /**
  * Update the report artifacts. If artifactName is set only that artifact will be updated.
  * @param {keyof LH.Artifacts=} artifactName
  */
 async function update(artifactName) {
   // get an available port
-  server.listen(0, 'localhost');
-  const port = await new Promise(res => server.getRawServer().on('listening', () => {
-    // Not a pipe or a domain socket, so will not be a string. See https://nodejs.org/api/net.html#net_server_address.
-    const address = /** @type {AddressInfo} */ (server.getRawServer().address());
-    res(address.port);
-  }));
+  await server.listen(0, 'localhost');
+  const port = server.getPort();
 
   const oldArtifacts = assetSaver.loadArtifacts(artifactPath);
 

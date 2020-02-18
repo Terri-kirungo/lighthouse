@@ -28,8 +28,8 @@ class Server {
     this._dataTransformer = null;
   }
 
-  getRawServer() {
-    return this._server;
+  getPort() {
+    return this._server.address().port;
   }
 
   /**
@@ -38,6 +38,10 @@ class Server {
    */
   listen(port, hostname) {
     this._server.listen(port, hostname);
+    return new Promise((resolve, reject) => {
+      this._server.on('listening', resolve);
+      this._server.on('error', reject);
+    });
   }
 
   /**
