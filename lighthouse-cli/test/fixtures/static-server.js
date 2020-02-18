@@ -115,9 +115,14 @@ class Server {
       if (useGzip) {
         data = zlib.gzipSync(data);
         headers['Content-Encoding'] = 'gzip';
+
         // Set special header for Lightrider, needed for Smokerider.
-        // This is meant to be the byte size of the entire
-        // response (encoded content, headers, chunk overhead, etc.). Rough estimate is OK.
+        // In production LR, this header is set by the production fetcher. For smokerider,
+        // a different fetcher is used, so we must set this header here instead, to excercies
+        // the parts of the LH netcode that expects this header.
+        // This _should_ be the byte size of the entire response
+        // (encoded content, headers, chunk overhead, etc.) but - a rough estimate is OK
+        // because the smoke test byte expectations have some wiggle room.
         headers['X-TotalFetchedSize'] = Buffer.byteLength(data) + JSON.stringify(headers).length;
       }
 
