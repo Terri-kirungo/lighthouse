@@ -25,7 +25,7 @@ class Server {
   constructor() {
     this._server = http.createServer(this._requestHandler.bind(this));
     /** @type {(data: string) => string=} */
-    this._dataTransformer;
+    this._dataTransformer = undefined;
   }
 
   getPort() {

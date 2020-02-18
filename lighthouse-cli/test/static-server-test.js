@@ -41,11 +41,12 @@ describe('Server', () => {
 
   it('fetches fixture', async () => {
     const data = await get(`http://localhost:${server.getPort()}/dobetterweb/dbw_tester.html`);
-    expect(data).toEqual(fs.readFileSync(`${__dirname}/fixtures/dobetterweb/dbw_tester.html`, 'utf-8'));
+    const expected = fs.readFileSync(`${__dirname}/fixtures/dobetterweb/dbw_tester.html`, 'utf-8');
+    expect(data).toEqual(expected);
   });
 
   it('setDataTransformer', async () => {
-    server.setDataTransformer(data => {
+    server.setDataTransformer(() => {
       return 'hello there';
     });
 

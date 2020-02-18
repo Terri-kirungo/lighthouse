@@ -31,7 +31,7 @@ async function update(artifactName) {
   ].join(' ');
   const flags = cliFlags.getFlags(rawFlags);
   await cli.runLighthouse(url, flags, budgetedConfig);
-  await new Promise(res => server.close(res));
+  await server.close();
 
   if (artifactName) {
     // Revert everything except the one artifact
