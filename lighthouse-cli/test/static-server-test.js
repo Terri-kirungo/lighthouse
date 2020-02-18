@@ -6,23 +6,8 @@
 'use strict';
 
 const fs = require('fs');
-const http = require('http');
+const fetch = require('isomorphic-fetch');
 const {server} = require('./fixtures/static-server.js');
-
-/**
- * @param {string} url
- */
-function get(url) {
-  return new Promise((resolve, reject) => {
-    let data = '';
-    http.get(url, function(resp) {
-      resp.on('data', function(chunk) {
-        data += chunk;
-      });
-      resp.on('end', () => resolve(data));
-    }).on('error', reject);
-  });
-}
 
 /* eslint-env jest */
 
@@ -40,7 +25,8 @@ describe('Server', () => {
   });
 
   it('fetches fixture', async () => {
-    const data = await get(`http://localhost:${server.getPort()}/dobetterweb/dbw_tester.html`);
+    const res = await fetch(`http://localhost:${server.getPort()}/dobetterweb/dbw_tester.html`);
+    const data = await res.text();
     const expected = fs.readFileSync(`${__dirname}/fixtures/dobetterweb/dbw_tester.html`, 'utf-8');
     expect(data).toEqual(expected);
   });
@@ -50,7 +36,8 @@ describe('Server', () => {
       return 'hello there';
     });
 
-    const data = await get(`http://localhost:${server.getPort()}/dobetterweb/dbw_tester.html`);
+    const res = await fetch(`http://localhost:${server.getPort()}/dobetterweb/dbw_tester.html`);
+    const data = await res.text();
     expect(data).toEqual('hello there');
   });
 });
